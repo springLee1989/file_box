@@ -1,0 +1,34 @@
+<%+header%>
+
+<%
+local mac = luci.util.exec("cat /sys/class/net/eth0/address|awk -F ':' '{print $1''$2''$3''$4''$5''$6 }'| tr a-z A-Z") or '0'
+local isRunText = ''
+if luci.sys.call("pidof ssr-redir >/dev/null") == 0 then
+	isRunText = "正在运行"
+else
+	isRunText = "未运行"
+end
+
+%>
+<h2><a id="content" name="content">国际网络加速</a></h2>
+<div class="cbi-map-descr">加速服务 - <%=isRunText%></div>
+<iframe id="iframepage" src="https://www.yunlink.hn.cn/api.php?op=editNode&mac=<%=mac%>" frameBorder=0 scrolling=no width="100%" ></iframe>
+
+<form style="display:inline" action="<%=REQUEST_URI%>" method="post">
+		<input type="hidden" name="isSubmit" value="1" />
+		<input class="cbi-button cbi-button-apply" type="submit" value="应用线路" />
+</form>
+<form style="display:inline" action="<%=REQUEST_URI%>" method="post">
+	<input type="hidden" name="isStop" value="1" />
+	<input class="cbi-button cbi-button-reset" type="submit" value="停止加速" />
+</form>
+<form style="display:inline" action="<%=REQUEST_URI%>" method="post">
+	<input type="hidden" name="isUpdateDns" value="1" />
+	<input class="cbi-button cbi-button-apply" type="submit" value="更新dns服务器" />
+</form>
+<script type="text/javascript">//<![CDATA[
+function stopss() {
+	window.location.reload();
+}
+//]]></script>
+<%+footer%>
